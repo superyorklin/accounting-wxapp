@@ -1,0 +1,185 @@
+<style lang="less" scoped>
+  .keyboard{
+    position: absolute;
+    bottom: 0;
+    .keyboard-memo{
+      display: flex;
+      width: 750rpx;
+      height: 80rpx;
+      border-top: 1rpx solid #ccc;
+      label{
+        height: 80rpx;
+        line-height: 80rpx;
+        margin-left: 20rpx;
+        font-size: 36rpx;
+        width: 120rpx;
+        flex-shrink: 0;
+      }
+      input{
+        height: 80rpx;
+        font-size: 36rpx;
+      }
+      .number{
+        margin-left: 30rpx;
+        line-height: 80rpx;
+        margin-right: 20rpx;
+        min-width: 180rpx;
+        font-size: 36rpx;
+        text-align: right;
+        flex-shrink: 0;
+        max-width: 360rpx;
+      }
+    }
+    .keyboard-item{
+      width: 750rpx;
+      display: flex;
+      flex-wrap: wrap;
+      view{
+        width: 25%;
+        height: 80rpx;
+        line-height: 80rpx;
+        text-align: center;
+        border-top: 1rpx solid #ccc;
+        border-left: 1rpx solid #ccc;
+        box-sizing: border-box;
+        &:nth-child(4n+1){
+          border-left: none;
+        }
+        picker.small{
+          font-size: 30rpx;
+        }
+      }
+    }
+  }
+  .finish{
+    background: #FFEC8B;
+  }
+</style>
+
+<template>
+  <view class="keyboard">
+    <view class="keyboard-memo">
+      <label>备注：</label>
+      <input placeholder="来点备注吧" />
+      <view class="number">{{number}}</view>
+    </view>
+    <view class="keyboard-item">
+      <block wx:for-items="{{keyboardContent}}" wx:for-item="item" wx-for-index="index" wx:key="item">
+        <block wx:if="{{item !== '今天'}}">
+          <view @tap="bindKeyTap({{item}})">{{item}}</view>
+        </block>
+        <block wx:else>
+          <view><picker class="{{pickedDate !== endDate ? 'small' : ''}}" mode="date" value="{{pickedDate}}" end="{{endDate}}" @change="bindDateChange">{{viewDate}}</picker></view>
+        </block>
+      </block>
+      <view class="iconfont icon-shanchu" @tap="bindKeyDel"></view>
+      <view class="finish" @tap="bindFinish">{{finishText}}</view>
+    </view>
+  </view>
+</template>
+
+<script>
+
+import wepy from 'wepy'
+import calCommonExp from '../utils/eval.js'
+var moment = require('moment')
+
+export default class Keyboard extends wepy.component{
+  data = {
+    keyboardContent: ['7','8','9','今天','4','5','6','+','1','2','3','-','.','0'],
+    number: '0.00',
+    endDate: moment().format('YYYY-MM-DD'),
+    pickedDate: moment().format('YYYY-MM-DD'),
+    viewDate: '今天'
+  }
+
+  methods = {
+    bindKeyTap(val) {
+      console.log(val);
+      switch (val) {
+        case '今天':
+          break;
+        case '+':
+          if (+this.number === 0) {
+            this.number = '0+'
+          }else if (this.existSign(this.number)) {
+            if (this.number[this.number.length-1] == '-' || this.number[this.number.length-1] == '+') {
+              this.number = this.number.slice(0,-1) + '+';
+            } else {
+              this.number = calCommonExp(this.number) + '+'
+            }
+          } else if (!this.existSign(this.number)) {
+            if (this.number.length < 9) {
+              this.number += '+'
+            }
+          }
+          break;
+        case '-':
+          if(+this.number === 0) {
+            this.number = '0-'
+          }
+          break;
+        case '.':
+          if(+this.number === 0) {
+            this.number = '0.'
+          } else{
+
+          }
+          break;
+        default:
+          if(+this.number === 0 && this.number !== '0.'){
+            this.number = val;
+          } else {
+            this.number += val;
+          }
+          break;
+      }
+    },
+    bindKeyDel() {
+      if(this.number.length === 1) {
+        this.number = '0';
+      } else {
+        this.number = this.number.slice(0,-1);
+      }
+    },
+    bindDateChange(e) {
+      this.pickedDate = e.detail.value
+      this.viewDate = this.pickedDate === this.endDate ? '今天' : this.pickedDate
+    },
+    bindFinish() {
+      if(+this.number === 0) {
+        wepy.showToast({
+          title: '请输入金额!',
+          icon: 'none',
+          duration: 2000
+        })
+      }
+    }
+  }
+
+  computed = {
+    finishText() {
+      return this.existSign(this.number) && !this.lastIsSign(this.number) ? '=' : '完成'
+    }
+  }
+
+  existSign(val) {
+    if(val.indexOf('-') > -1) {
+      return 'sub'
+    }
+    if(val.indexOf('+') > -1) {
+      return 'plus'
+    }
+  }
+
+  splitVal() {
+    this.number.split('+')
+  }
+
+  lastIsSign(val) {
+    return (val[val.length - 1] === '+' || val[val.length - 1] === '-')
+  }
+
+}
+</script>
+

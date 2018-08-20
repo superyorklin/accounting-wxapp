@@ -1,0 +1,98 @@
+<style lang="less" scoped>
+  @import "../style/common.less";
+  .container{
+    .head-wrap{
+      background: #FFEC8B;
+      width: 100%;
+      .title{
+        text-align: center;
+        margin: 20rpx 0;
+        font-size: 36rpx;
+      }
+      .tab-wrap{
+        width: 50%;
+        text-align: center;
+        .tab-head{
+          font-size: 24rpx;
+          color: #999999;
+          margin-bottom: 20rpx;
+        }
+      }
+    }
+    .content-scroll{
+      height: calc(~"100vh - 200rpx");
+    }
+  }
+</style>
+<template>
+  <view class="container">
+    <view class="head-wrap">
+      <view class="clearfix">
+        <view class="fl tab-wrap">
+          <view class="tab-head">{{pickedYearAndMonth[0]}}年</view>
+          <view><picker mode="date" fields="month" @change="bindMonthChange">{{pickedYearAndMonth[1]}}月</picker></view>
+        </view>
+        <view class="fl tab-wrap">
+          <view class="tab-head">支出</view>
+          <view>{{expenseMoney}}</view>
+        </view>
+      </view>
+    </view>
+    <scroll-view scroll-y="true" class="content-scroll">
+      <view wx:for-items="{{demos}}" wx:for-item="item">{{item}}</view>
+    </scroll-view>
+    <tab activeTab="tab1"/>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import Keyboard from '@/components/keyboard'
+  import Tab from '@/components/tab'
+  import moment from 'moment'
+
+  @connect({
+    num (state) {
+      return state.counter.num
+    },
+    asyncNum (state) {
+      return state.counter.asyncNum
+    },
+    sumNum (state) {
+      return state.counter.num + state.counter.asyncNum
+    }
+  })
+
+  export default class Index extends wepy.page {
+    config = {
+      disableScroll: true
+    }
+    components = {
+      keyboard: Keyboard,
+      tab: Tab
+    }
+
+
+    data = {
+      pickedDate: moment().format('YYYY-MM'),
+      expenseMoney: 0,
+      demos: new Array(50).fill('asdaiufafufiufui')
+    }
+
+    computed = {
+      pickedYearAndMonth() {
+        return this.pickedDate.split('-')
+      },
+    }
+
+    methods = {
+      bindMonthChange(e) {
+        this.pickedDate = e.detail.value
+      }
+    }
+
+    onLoad() {
+    }
+  }
+</script>

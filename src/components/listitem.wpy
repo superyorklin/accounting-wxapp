@@ -1,0 +1,30 @@
+<template>
+  <view class="item-wrap">
+    <view class="header clearfix">
+      <view class="fl">{{date}}&nbsp;&nbsp;{{week}}</view>
+      <view class="fr">支出：{{totalAmount}}</view>
+    </view>
+  </view>
+</template>
+<style lang="less" scoped>
+  @import '../style/common.less';
+
+  .item-wrap{
+    margin-bottom: 20rpx;
+  }
+</style>
+<script>
+  import wepy from 'wepy'
+
+  export default class ListItem extends wepy.component{
+    props = {
+      date: String,
+      week: String,
+      feeType: String,
+      memo: String,
+      totalAmount: String,
+      paymentList: Array
+    }
+  }
+</script>
+

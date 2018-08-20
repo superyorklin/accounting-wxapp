@@ -1,0 +1,78 @@
+<template>
+  <view class="tabs-wrap">
+    <view class="tab {{activeTab === 'tab1' ? 'active' : null}}" @tap="bindTabTap('1')">
+      <view class="iconfont icon-mingxi" style="font-size: 28rpx;"></view>
+      <view class="note">明细</view>
+    </view>
+    <view class="tab {{activeTab === 'tab2' ? 'active' : null}}" @tap="bindTabTap('2')">
+      <view class="iconfont icon-tubiao"></view>
+      <view class="note">图表</view>
+    </view>
+    <view class="tab {{activeTab === 'tab3' ? 'active' : null}}" @tap="bindTabTap('3')">
+      <view class="iconfont icon-tianjia"></view>
+      <view class="note">记账</view>
+    </view>
+    <view class="tab {{activeTab === 'tab4' ? 'active' : null}}" @tap="bindTabTap('4')">
+      <view class="iconfont icon-faxian"></view>
+      <view class="note">发现</view>
+    </view>
+    <view class="tab {{activeTab === 'tab5' ? 'active' : null}}" @tap="bindTabTap('5')">
+      <view class="iconfont icon-wode"></view>
+      <view class="note">我的</view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from "wepy";
+
+export default class Tab extends wepy.component{
+
+  props = {
+    activeTab: String
+  }
+
+  methods = {
+    bindTabTap(event) {
+      console.log(event)
+      console.log(getCurrentPages())
+      switch (event) {
+        case '1':
+          
+          break;
+        case '2':
+          
+        default:
+          break;
+      }
+    }
+  }
+}
+</script>
+<style lang="less" scoped>
+  .tabs-wrap{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 100rpx;
+    width: 100%;
+    background: #FFEC8B;
+    display: flex;
+    .tab{
+      width: 20%;
+      text-align: center;
+      color: #000000;
+      padding: 20rpx 0;
+      &.active{
+        color: #123893;
+      }
+      .iconfont{
+        font-size: 32rpx;
+        line-height: 32rpx;
+      }
+      .note{
+        font-size: 24rpx;
+      }
+    }
+  }
+</style>
+
