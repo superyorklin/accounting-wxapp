@@ -1,9 +1,19 @@
 <template>
   <view class="item-wrap">
     <view class="header clearfix">
-      <view class="fl">{{date}}&nbsp;&nbsp;{{week}}</view>
+      <view class="fl">{{dateAndWeek}}</view>
       <view class="fr">支出：{{totalAmount}}</view>
     </view>
+    <repeat for="{{paymentList}}" item="eachPay" index="index" key="eachPay.id">
+        <view class="content" @touchstart="ts" @touchend="te" @touchmove="tm" data-index="{{index}}" style="{{eachPay.style}}">
+          <view class="iconfont icon-{{eachPay.feeType}}"></view>
+          <view class="detail clearfix">
+            <view class="fl">{{eachPay.memo}}</view>
+            <view class="fr">-{{eachPay.amount}}</view>
+          </view>
+          <view class="del" @tap="bindDel({{eachPay.id}})">删除</view>
+        </view>
+    </repeat>
   </view>
 </template>
 <style lang="less" scoped>
@@ -11,19 +21,146 @@
 
   .item-wrap{
     margin-bottom: 20rpx;
+    .header{
+      padding: 20rpx;
+      font-size: 24rpx;
+      color: #cccccc;
+      border-bottom: 1rpx solid #ddd;
+    }
+    .content{
+      position: relative;
+      &:last-child .detail{
+        border: none;
+      }
+      .iconfont{
+        margin: 20rpx;
+        height: 60rpx;
+        width: 60rpx;
+        border-radius: 50%;
+        background: #FFEC8B;
+        text-align: center;
+        line-height: 60rpx;
+        font-size: 40rpx;
+        float: left;
+      }
+      .detail{
+        margin-left: 120rpx;
+        line-height: 60rpx;
+        font-size: 30rpx;
+        padding:20rpx 20rpx 20rpx 0;
+        box-sizing:border-box;
+        height:100rpx;
+        border-bottom: 1rpx solid #ddd;
+      }
+      .del{
+        position: absolute;
+        top: 0;
+        right: -180rpx;
+        width: 180rpx;
+        background: #e64340;
+        color: #fff;
+        bottom: 0;
+        line-height: 100rpx;
+        text-align: center;
+        font-size: 32rpx;
+      }
+    }
+    
   }
 </style>
 <script>
   import wepy from 'wepy'
 
   export default class ListItem extends wepy.component{
+
+    data = {
+      delBtnWidth: 180,
+      paymentList: []
+    }
+
     props = {
-      date: String,
-      week: String,
-      feeType: String,
-      memo: String,
-      totalAmount: String,
-      paymentList: Array
+      item: Object
+    }
+
+    methods = {
+      ts(e) { //开始触摸事件
+        let that = this
+        if(e.touches.length === 1) {
+          that.startX = e.touches[0].clientX
+        }
+      },
+
+      tm(e) {
+        let that = this
+        if(e.touches.length === 1) {
+          let moveX = e.touches[0].clientX
+          let disX = that.startX - moveX
+          let style = ''
+          if(disX <= 0) {
+            style = 'left: 0px'
+          }else if(disX <= that.delBtnWidth) {
+            style = 'left: -' + disX + 'px'
+          }else {
+            style = 'left: -' +that.delBtnWidth + 'px'
+          }
+          that.paymentList[e.currentTarget.dataset.index].style = style
+          that.paymentList = that.paymentList.slice()
+          this.$apply()
+        }
+      },
+
+      te(e) {
+        let that = this
+        if(e.changedTouches.length === 1) {
+          let endX =e.changedTouches[0].clientX
+          let disX = that.startX - endX
+          let delBtnWidth = that.delBtnWidth
+
+          let style = disX > delBtnWidth /2 ? 'left: -' + delBtnWidth + 'px' : 'left:0px'
+
+          that.paymentList[e.currentTarget.dataset.index].style = style
+          that.paymentList = that.paymentList.slice()
+          console.log(that.paymentList)
+          this.$apply()
+
+        }
+      },
+
+      bindDel(id) {
+        console.log(id)
+        //删除
+      }
+    }
+
+    computed = {
+      dateAndWeek() {
+        return `${this.item.date}  ${this.item.week}`
+      },
+      totalAmount() {
+        return this.item.totalAmount
+      },
+    }
+
+    initEleWidth () {
+      let that = this
+      that.delBtnWidth = that.getEleWidth(that.delBtnWidth)
+    }
+
+    getEleWidth (w) {  //获取元素自适应后的实际宽度（也就是根据设计稿宽度换算成px像素）
+      let real = 0
+      try {
+        let resWidth = wx.getSystemInfoSync().windowWidth
+        let scale = 750 / w
+        real = Math.floor(resWidth / scale)
+        return real
+      }catch (e) {
+        return false
+      }
+    }
+
+    onLoad() {
+      this.paymentList = this.item.paymentList.map(item => Object.assign(item,{style: ""}))
+      this.initEleWidth()
     }
   }
 </script>

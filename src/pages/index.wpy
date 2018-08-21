@@ -39,7 +39,9 @@
       </view>
     </view>
     <scroll-view scroll-y="true" class="content-scroll">
-      <view wx:for-items="{{demos}}" wx:for-item="item">{{item}}</view>
+      <repeat for="{{demos}}" item="item" key="item.id">
+        <listItem :item="item" />
+      </repeat>
     </scroll-view>
     <tab activeTab="tab1"/>
   </view>
@@ -50,6 +52,7 @@
   import { connect } from 'wepy-redux'
   import Keyboard from '@/components/keyboard'
   import Tab from '@/components/tab'
+  import ListItem from '@/components/listitem'
   import moment from 'moment'
 
   @connect({
@@ -70,14 +73,35 @@
     }
     components = {
       keyboard: Keyboard,
-      tab: Tab
+      tab: Tab,
+      listItem: ListItem
     }
 
 
     data = {
       pickedDate: moment().format('YYYY-MM'),
       expenseMoney: 0,
-      demos: new Array(50).fill('asdaiufafufiufui')
+      demos: [
+        {
+          id: 'asdioqwde',
+          date: '08月20日',
+          week: '星期一',
+          totalAmount: '270',
+          paymentList: [
+            {
+              id: 'asdohqwdi',
+              feeType: 'canyin',
+              memo: '餐饮',
+              amount: '50'
+            },{
+              id: 'asdAsd',
+              feeType: 'canyin',
+              memo: '餐饮',
+              amount: '220'
+            }
+          ]
+        }
+      ]
     }
 
     computed = {
