@@ -26,7 +26,8 @@ console.log(wepy)
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index'
+      'pages/index',
+      'pages/type'
     ],
     window: {
       backgroundTextStyle: 'light',

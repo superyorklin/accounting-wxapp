@@ -1,0 +1,71 @@
+<template>
+  <view class="type-wrap">
+    <repeat for="{{type}}" item="item">
+      <view class="icon-wrap">
+          <view class="iconfont icon-{{item.icon}}"></view>
+      </view>
+    </repeat>
+  </view>
+</template>
+
+<script>
+
+import wepy from "wepy";
+
+export default class Type extends wepy.page{
+
+  data = {
+    type: [{
+      icon: 'canyin',
+      memo: '餐饮'
+    },{
+      icon: 'shuiguo',
+      memo: '水果'
+    },{
+      icon: 'shucai',
+      memo: '蔬菜'
+    },{
+      icon: 'gouwu',
+      memo: '购物'
+    },{
+      icon: 'jujia',
+      memo: '居家'
+    },{
+      icon: 'fushi',
+      memo: '服饰'
+    },{
+      icon: 'zhufang',
+      memo: '住房'
+    },{
+      icon: 'jiaotong',
+      memo: '交通'
+    }]  
+  }
+
+  onLoad() {
+    console.log('this is type page')
+  }
+}
+</script>
+
+<style lang="less" scoped>
+  .type-wrap{
+    display: flex;
+    flex-wrap: wrap;
+    .icon-wrap{
+      width: 25%;
+      .iconfont{
+        width: 120rpx;
+        height: 120rpx;
+        text-align: center;
+        margin: 20rpx auto;
+        border-radius: 50%;
+        background: #eee;
+        line-height: 120rpx;
+        font-size: 60rpx;
+      }
+    }
+  }
+</style>
+
+

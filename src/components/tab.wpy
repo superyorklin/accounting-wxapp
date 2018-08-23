@@ -33,14 +33,16 @@ export default class Tab extends wepy.component{
 
   methods = {
     bindTabTap(event) {
-      console.log(event)
-      console.log(getCurrentPages())
+      
       switch (event) {
         case '1':
           
           break;
         case '2':
-          
+        
+          break;
+        case '3':
+          wepy.navigateTo({url:'type'})
         default:
           break;
       }

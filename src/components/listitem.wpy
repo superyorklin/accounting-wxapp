@@ -5,7 +5,7 @@
       <view class="fr">支出：{{totalAmount}}</view>
     </view>
     <repeat for="{{paymentList}}" item="eachPay" index="index" key="eachPay.id">
-        <view class="content" @touchstart="ts" @touchend="te" @touchmove="tm" data-index="{{index}}" style="{{eachPay.style}}">
+        <view class="content" @touchstart="ts" @touchend="te" @touchmove="tm" data-id="{{key}}" style="{{eachPay.style}}">
           <view class="iconfont icon-{{eachPay.feeType}}"></view>
           <view class="detail clearfix">
             <view class="fl">{{eachPay.memo}}</view>
@@ -20,7 +20,7 @@
   @import '../style/common.less';
 
   .item-wrap{
-    margin-bottom: 20rpx;
+    margin-bottom: 10rpx;
     .header{
       padding: 20rpx;
       font-size: 24rpx;
@@ -85,6 +85,7 @@
     methods = {
       ts(e) { //开始触摸事件
         let that = this
+        this.paymentList = this.dataSlice.slice()
         if(e.touches.length === 1) {
           that.startX = e.touches[0].clientX
         }
@@ -103,9 +104,7 @@
           }else {
             style = 'left: -' +that.delBtnWidth + 'px'
           }
-          that.paymentList[e.currentTarget.dataset.index].style = style
-          that.paymentList = that.paymentList.slice()
-          this.$apply()
+          that.paymentList[1].style = style
         }
       },
 
@@ -118,11 +117,7 @@
 
           let style = disX > delBtnWidth /2 ? 'left: -' + delBtnWidth + 'px' : 'left:0px'
 
-          that.paymentList[e.currentTarget.dataset.index].style = style
-          that.paymentList = that.paymentList.slice()
-          console.log(that.paymentList)
-          this.$apply()
-
+          that.paymentList[1].style = style
         }
       },
 
@@ -158,9 +153,12 @@
       }
     }
 
+    findIndex(arr,key) {
+
+    }
+
     onLoad() {
-      this.paymentList = this.item.paymentList.map(item => Object.assign(item,{style: ""}))
-      this.initEleWidth()
+     
     }
   }
 </script>
